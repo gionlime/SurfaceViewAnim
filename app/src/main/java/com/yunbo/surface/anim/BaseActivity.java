@@ -1,4 +1,4 @@
-package com.iamlarry.floatwindowdemo.anim;
+package com.yunbo.surface.anim;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 
-import com.iamlarry.floatwindowdemo.drag.DragVideoView;
-import com.iamlarry.floatwindowdemo.R;
+import com.yunbo.surface.drag.DragVideoView;
+import com.yunbo.surface.R;
 
 /**
  * @author larry on 2017/12/26.

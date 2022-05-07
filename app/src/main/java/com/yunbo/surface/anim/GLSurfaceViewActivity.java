@@ -1,4 +1,4 @@
-package com.iamlarry.floatwindowdemo.anim;
+package com.yunbo.surface.anim;
 
 
 import android.content.res.AssetFileDescriptor;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 
-import com.iamlarry.floatwindowdemo.R;
+import com.yunbo.surface.R;
 
 public class GLSurfaceViewActivity extends BaseActivity {
 

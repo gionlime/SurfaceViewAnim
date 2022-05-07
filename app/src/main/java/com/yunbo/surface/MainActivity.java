@@ -1,4 +1,4 @@
-package com.iamlarry.floatwindowdemo;
+package com.yunbo.surface;
 
 
 import android.app.Activity;
@@ -6,9 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.iamlarry.floatwindowdemo.anim.GLSurfaceViewActivity;
-import com.iamlarry.floatwindowdemo.anim.SurfaceViewActivity;
-import com.iamlarry.floatwindowdemo.anim.TextureViewActivity;
+import com.yunbo.surface.anim.SurfaceViewActivity;
+import com.yunbo.surface.anim.TextureViewActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     @Override

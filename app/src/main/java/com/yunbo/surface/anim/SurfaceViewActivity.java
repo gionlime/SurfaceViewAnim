@@ -1,4 +1,4 @@
-package com.iamlarry.floatwindowdemo.anim;
+package com.yunbo.surface.anim;
 
 
 import android.content.res.AssetFileDescriptor;
@@ -9,7 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 
-import com.iamlarry.floatwindowdemo.R;
+import com.yunbo.surface.R;
 
 import java.io.IOException;
 

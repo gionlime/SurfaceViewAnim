@@ -1,4 +1,4 @@
-package com.iamlarry.floatwindowdemo.anim;
+package com.yunbo.surface.anim;
 
 
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
-import com.iamlarry.floatwindowdemo.R;
+import com.yunbo.surface.R;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

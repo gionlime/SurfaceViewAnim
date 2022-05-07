@@ -67,7 +67,7 @@
 
     </LinearLayout>
 
-    <com.iamlarry.floatwindowdemo.drag.DragVideoView
+    <com.yunbo.surface.drag.DragVideoView
         android:id="@+id/drag_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -82,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorAccent" />
-    </com.iamlarry.floatwindowdemo.drag.DragVideoView>
+    </com.yunbo.surface.drag.DragVideoView>
 
 
 </LinearLayout>

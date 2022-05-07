@@ -1,4 +1,4 @@
-package com.iamlarry.floatwindowdemo.drag;
+package com.yunbo.surface.anim;
 
 
 import android.content.res.AssetFileDescriptor;
@@ -10,15 +10,13 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.ViewGroup;
 
-import com.iamlarry.floatwindowdemo.R;
-import com.iamlarry.floatwindowdemo.anim.BaseActivity;
-import com.iamlarry.floatwindowdemo.anim.LarryRenderThread;
+import com.yunbo.surface.R;
 
 import java.io.IOException;
 
-public class DragTextureViewActivity extends BaseActivity implements MediaPlayer.OnPreparedListener, TextureView.SurfaceTextureListener, SurfaceTexture.OnFrameAvailableListener {
+public class TextureViewActivity extends BaseActivity implements MediaPlayer.OnPreparedListener, TextureView.SurfaceTextureListener, SurfaceTexture.OnFrameAvailableListener {
 
-    private static DragTextureViewActivity mInstance;
+    private static TextureViewActivity mInstance;
 
     private TextureView mTextureView;
 
@@ -118,7 +116,7 @@ public class DragTextureViewActivity extends BaseActivity implements MediaPlayer
         }
     }
 
-    public static DragTextureViewActivity getAppInstance() {
+    public static TextureViewActivity getAppInstance() {
         return mInstance;
     }
 
