@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SurfaceViewAnim</string>
+    <string name="anim_a">透明</string>
+</resources>
