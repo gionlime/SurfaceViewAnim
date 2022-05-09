@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.yunbo.surface.R;
 
@@ -27,7 +28,7 @@ public class TextureViewActivity extends BaseActivity implements MediaPlayer.OnP
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Toast.makeText(this, "TextureViewActivity", Toast.LENGTH_SHORT).show();
         mTextureView = (TextureView) findViewById(R.id.video);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         ViewGroup.LayoutParams lp = mTextureView.getLayoutParams();

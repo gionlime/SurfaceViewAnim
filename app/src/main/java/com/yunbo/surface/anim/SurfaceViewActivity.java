@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.yunbo.surface.R;
 
@@ -22,6 +23,7 @@ public class SurfaceViewActivity extends BaseActivity implements SurfaceHolder.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Toast.makeText(this, "SurfaceViewActivity", Toast.LENGTH_SHORT).show();
         mVideoView1 = (SurfaceView) findViewById(R.id.video);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         ViewGroup.LayoutParams lp = mVideoView1.getLayoutParams();
