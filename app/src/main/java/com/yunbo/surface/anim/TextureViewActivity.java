@@ -25,6 +25,10 @@ public class TextureViewActivity extends BaseActivity implements MediaPlayer.OnP
     private LarryRenderThread mRenderThread;
     private SurfaceTexture mSurfaceTexture;
 
+    public static TextureViewActivity getAppInstance() {
+        return mInstance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,10 +119,6 @@ public class TextureViewActivity extends BaseActivity implements MediaPlayer.OnP
         synchronized (mRenderThread) {
             mRenderThread.notify();
         }
-    }
-
-    public static TextureViewActivity getAppInstance() {
-        return mInstance;
     }
 
     public void starVideo(int texture) {

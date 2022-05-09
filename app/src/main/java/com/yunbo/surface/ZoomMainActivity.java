@@ -9,12 +9,12 @@ import android.view.View;
 import com.yunbo.surface.anim.SurfaceViewActivity;
 import com.yunbo.surface.anim.TextureViewActivity;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class ZoomMainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_video_demo);
+        setContentView(R.layout.activity_zoom_main);
 
         findViewById(R.id.anim_surfaceview).setOnClickListener(this);
         findViewById(R.id.anim_textureview).setOnClickListener(this);

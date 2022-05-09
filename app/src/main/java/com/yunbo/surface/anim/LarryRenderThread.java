@@ -24,54 +24,45 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-public class LarryRenderThread extends Thread{
-    private static float shapeCoords[] = {
-            -1.0f,  1.0f, 0.0f,   // top left
-            -1.0f, -1.0f, 0.0f,   // bottom left
-            1.0f, -1.0f, 0.0f,   // bottom right
-            1.0f,  1.0f, 0.0f }; // top right
-
-    private static float textureCoords[] = {
-            0.0f,  0.0f,   // top left
-            0.0f, 1.0f,   // bottom left
-            1.0f, 1.0f,    // bottom right
-            1.0f,  0.0f}; // top right
-
-    private static short drawOrder[] = { 0, 1, 2, 0, 2, 3};
-
+public class LarryRenderThread extends Thread {
     private static final int COORDS_PER_VERTEX = 3;
     private static final int TEXTURE_COORS_PER_VERTEX = 2;
-
+    private static final String TAG = LarryRenderThread.class.getSimpleName();
+    private static float shapeCoords[] = {
+            -1.0f, 1.0f, 0.0f,   // top left
+            -1.0f, -1.0f, 0.0f,   // bottom left
+            1.0f, -1.0f, 0.0f,   // bottom right
+            1.0f, 1.0f, 0.0f}; // top right
+    private static float textureCoords[] = {
+            0.0f, 0.0f,   // top left
+            0.0f, 1.0f,   // bottom left
+            1.0f, 1.0f,    // bottom right
+            1.0f, 0.0f}; // top right
+    private static short drawOrder[] = {0, 1, 2, 0, 2, 3};
     int mWidth;
     int mHeight;
-
     int mDeferWidth;
     int mDeferHeight;
-
     private int mProgram;
     private int mTexName = 0;
     private SurfaceTexture mSurface;
-
     /*For EGL Setup*/
     private EGL10 mEgl;
     private EGLDisplay mEglDisplay;
     private EGLConfig mEglConfig;
     private EGLContext mEglContext;
     private EGLSurface mEglSurface;
-
     /*Vertex buffers*/
     private FloatBuffer mVertexBuffer;
     private FloatBuffer mTexCoordBuffer;
     private ShortBuffer mDrawListBuffer;
-
-    private static final String TAG = LarryRenderThread.class.getSimpleName();
     private boolean mReleased = false;
 
-    public LarryRenderThread(SurfaceTexture surface){
+    public LarryRenderThread(SurfaceTexture surface) {
         mSurface = surface;
     }
 
-    private static String readRawTextFile(Context context, int resId){
+    private static String readRawTextFile(Context context, int resId) {
         InputStream inputStream = context.getResources().openRawResource(resId);
 
         InputStreamReader inputreader = new InputStreamReader(inputStream);
@@ -80,7 +71,7 @@ public class LarryRenderThread extends Thread{
         StringBuilder text = new StringBuilder();
 
         try {
-            while (( line = buffreader.readLine()) != null) {
+            while ((line = buffreader.readLine()) != null) {
                 text.append(line);
                 text.append('\n');
             }
@@ -91,7 +82,7 @@ public class LarryRenderThread extends Thread{
         return text.toString();
     }
 
-    private int compileShader(){
+    private int compileShader() {
         int program;
         int vertexShader = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         int fragmentShader = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
@@ -105,17 +96,18 @@ public class LarryRenderThread extends Thread{
         GLES20.glShaderSource(fragmentShader, fragmentShaderCode);
 
         int[] compileStatus = new int[1];
-        GLES20.glCompileShader(vertexShader);;
+        GLES20.glCompileShader(vertexShader);
+        ;
         GLES20.glGetShaderiv(vertexShader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0){
+        if (compileStatus[0] == 0) {
             String err = GLES20.glGetShaderInfoLog(vertexShader);
-            throw new RuntimeException("vertex shader compile failed:"+err);
+            throw new RuntimeException("vertex shader compile failed:" + err);
         }
         GLES20.glCompileShader(fragmentShader);
         GLES20.glGetShaderiv(fragmentShader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-        if (compileStatus[0] == 0){
+        if (compileStatus[0] == 0) {
             String err = GLES20.glGetShaderInfoLog(fragmentShader);
-            throw new RuntimeException("fragment shader compile failed:"+err);
+            throw new RuntimeException("fragment shader compile failed:" + err);
         }
 
         program = GLES20.glCreateProgram();
@@ -127,23 +119,23 @@ public class LarryRenderThread extends Thread{
     }
 
     public void prepareBuffer() {
-		/*Vertex buffer*/
-        ByteBuffer bb = ByteBuffer.allocateDirect(4*shapeCoords.length);
+        /*Vertex buffer*/
+        ByteBuffer bb = ByteBuffer.allocateDirect(4 * shapeCoords.length);
         bb.order(ByteOrder.nativeOrder());
 
         mVertexBuffer = bb.asFloatBuffer();
         mVertexBuffer.put(shapeCoords);
         mVertexBuffer.position(0);
 
-		/*Vertex texture coord buffer*/
-        ByteBuffer txeb = ByteBuffer.allocateDirect(4*textureCoords.length);
+        /*Vertex texture coord buffer*/
+        ByteBuffer txeb = ByteBuffer.allocateDirect(4 * textureCoords.length);
         txeb.order(ByteOrder.nativeOrder());
 
         mTexCoordBuffer = txeb.asFloatBuffer();
         mTexCoordBuffer.put(textureCoords);
         mTexCoordBuffer.position(0);
 
-		/*Draw list buffer*/
+        /*Draw list buffer*/
         ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2);
         dlb.order(ByteOrder.nativeOrder());
 
@@ -152,7 +144,7 @@ public class LarryRenderThread extends Thread{
         mDrawListBuffer.position(0);
     }
 
-    private void startPreview(){
+    private void startPreview() {
         int textures[] = new int[1];
         GLES20.glGenTextures(1, textures, 0);
 
@@ -162,7 +154,7 @@ public class LarryRenderThread extends Thread{
         mTexName = textures[0];
     }
 
-    private void drawFrame(){
+    private void drawFrame() {
         GLES20.glUseProgram(mProgram);
 
         int positionHandler = GLES20.glGetAttribLocation(mProgram, "aPosition");
@@ -182,12 +174,12 @@ public class LarryRenderThread extends Thread{
 
         GLES20.glVertexAttribPointer(positionHandler, COORDS_PER_VERTEX,
                 GLES20.GL_FLOAT, false,
-                COORDS_PER_VERTEX*4, mVertexBuffer);
+                COORDS_PER_VERTEX * 4, mVertexBuffer);
 
         GLES20.glEnableVertexAttribArray(texCoordHandler);
         GLES20.glVertexAttribPointer(texCoordHandler, TEXTURE_COORS_PER_VERTEX,
                 GLES20.GL_FLOAT, false,
-                TEXTURE_COORS_PER_VERTEX*4, mTexCoordBuffer);
+                TEXTURE_COORS_PER_VERTEX * 4, mTexCoordBuffer);
 
         GLES20.glUniform1i(textureHandler, 0);
 
@@ -197,24 +189,24 @@ public class LarryRenderThread extends Thread{
         GLES20.glDisableVertexAttribArray(texCoordHandler);
     }
 
-    private void initGL(){
-		/*Get EGL handle*/
-        mEgl = (EGL10)EGLContext.getEGL();
+    private void initGL() {
+        /*Get EGL handle*/
+        mEgl = (EGL10) EGLContext.getEGL();
 
-		/*Get EGL display*/
+        /*Get EGL display*/
         mEglDisplay = mEgl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 
-        if (EGL10.EGL_NO_DISPLAY == mEglDisplay){
-            throw new RuntimeException("eglGetDisplay failed:"+GLUtils.getEGLErrorString(mEgl.eglGetError()));
+        if (EGL10.EGL_NO_DISPLAY == mEglDisplay) {
+            throw new RuntimeException("eglGetDisplay failed:" + GLUtils.getEGLErrorString(mEgl.eglGetError()));
         }
 
-		/*Initialize & Version*/
+        /*Initialize & Version*/
         int versions[] = new int[2];
-        if (!mEgl.eglInitialize(mEglDisplay, versions)){
-            throw new RuntimeException("eglInitialize failed:"+GLUtils.getEGLErrorString(mEgl.eglGetError()));
+        if (!mEgl.eglInitialize(mEglDisplay, versions)) {
+            throw new RuntimeException("eglInitialize failed:" + GLUtils.getEGLErrorString(mEgl.eglGetError()));
         }
 
-		/*Configuration*/
+        /*Configuration*/
         int configsCount[] = new int[1];
         EGLConfig configs[] = new EGLConfig[1];
         int configSpec[] = new int[]{
@@ -229,32 +221,32 @@ public class LarryRenderThread extends Thread{
         };
 
         mEgl.eglChooseConfig(mEglDisplay, configSpec, configs, 1, configsCount);
-        if (configsCount[0] <= 0){
-            throw new RuntimeException("eglChooseConfig failed:"+GLUtils.getEGLErrorString(mEgl.eglGetError()));
+        if (configsCount[0] <= 0) {
+            throw new RuntimeException("eglChooseConfig failed:" + GLUtils.getEGLErrorString(mEgl.eglGetError()));
         }
         mEglConfig = configs[0];
 
-		/*Create Context*/
+        /*Create Context*/
         int contextSpec[] = new int[]{
                 EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
                 EGL10.EGL_NONE
         };
         mEglContext = mEgl.eglCreateContext(mEglDisplay, mEglConfig, EGL10.EGL_NO_CONTEXT, contextSpec);
 
-        if (EGL10.EGL_NO_CONTEXT == mEglContext){
-            throw new RuntimeException("eglCreateContext failed: "+GLUtils.getEGLErrorString(mEgl.eglGetError()));
+        if (EGL10.EGL_NO_CONTEXT == mEglContext) {
+            throw new RuntimeException("eglCreateContext failed: " + GLUtils.getEGLErrorString(mEgl.eglGetError()));
         }
 
-		/*Create window surface*/
+        /*Create window surface*/
         mEglSurface = mEgl.eglCreateWindowSurface(mEglDisplay, mEglConfig, mSurface, null);
 
-        if (null == mEglSurface || EGL10.EGL_NO_SURFACE == mEglSurface){
-            throw new RuntimeException("eglCreateWindowSurface failed"+GLUtils.getEGLErrorString(mEgl.eglGetError()));
+        if (null == mEglSurface || EGL10.EGL_NO_SURFACE == mEglSurface) {
+            throw new RuntimeException("eglCreateWindowSurface failed" + GLUtils.getEGLErrorString(mEgl.eglGetError()));
         }
 
-		/*Make current*/
-        if (!mEgl.eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)){
-            throw new RuntimeException("eglMakeCurrent failed:"+GLUtils.getEGLErrorString(mEgl.eglGetError()));
+        /*Make current*/
+        if (!mEgl.eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
+            throw new RuntimeException("eglMakeCurrent failed:" + GLUtils.getEGLErrorString(mEgl.eglGetError()));
         }
     }
 
@@ -270,16 +262,16 @@ public class LarryRenderThread extends Thread{
 
         startPreview();
 
-        while(true) {
+        while (true) {
             if (mReleased) {
                 break;
             }
 
-            synchronized(app){
+            synchronized (app) {
                 app.updateFrame();
 
                 GLES20.glViewport(0, 0, mWidth, mHeight);
-                if (mDeferWidth != 0){
+                if (mDeferWidth != 0) {
                     mWidth = mDeferWidth;
                     mHeight = mDeferHeight;
                     mDeferWidth = 0;
@@ -290,14 +282,14 @@ public class LarryRenderThread extends Thread{
                 drawFrame();
             }
 
-            if (!mEgl.eglSwapBuffers(mEglDisplay, mEglSurface)){
+            if (!mEgl.eglSwapBuffers(mEglDisplay, mEglSurface)) {
                 throw new RuntimeException("Cannot swap buffers");
             }
 
-            try{
+            try {
                 wait();
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 break;
             }
         }
@@ -310,12 +302,11 @@ public class LarryRenderThread extends Thread{
         mEgl.eglDestroyContext(mEglDisplay, mEglContext);
     }
 
-    synchronized public void setRegion(int width, int height){
-        if (mWidth != 0){
+    synchronized public void setRegion(int width, int height) {
+        if (mWidth != 0) {
             mDeferWidth = width;
             mDeferHeight = height;
-        }
-        else {
+        } else {
             mWidth = width;
             mHeight = height;
             mDeferWidth = 0;

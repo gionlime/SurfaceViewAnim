@@ -124,59 +124,66 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
         mMediaPlayer.release();
     }
 
+    public void setFrameCallback(FrameCallback fc) {
+        mFrameCallback = fc;
+    }
+
+    private void onFirstFrameRendered() {
+        if (mFrameCallback != null) {
+            mFrameCallback.onFirstFrame();
+        }
+    }
+
+    public interface FrameCallback {
+        void onFirstFrame();
+    }
+
     private class VideoRender
-        implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
+            implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
         private static final String TAG = "VideoRender";
 
         private static final int FLOAT_SIZE_BYTES = 4;
         private static final int TRIANGLE_VERTICES_DATA_STRIDE_BYTES = 5 * FLOAT_SIZE_BYTES;
         private static final int TRIANGLE_VERTICES_DATA_POS_OFFSET = 0;
         private static final int TRIANGLE_VERTICES_DATA_UV_OFFSET = 3;
+        private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
         private final float[] mTriangleVerticesData = {
-            // X, Y, Z, U, V
-            -1.0f, -1.0f, 0, 0.f, 0.f,
-            1.0f, -1.0f, 0, 1.f, 0.f,
-            -1.0f,  1.0f, 0, 0.f, 1.f,
-            1.0f,  1.0f, 0, 1.f, 1.f,
+                // X, Y, Z, U, V
+                -1.0f, -1.0f, 0, 0.f, 0.f,
+                1.0f, -1.0f, 0, 1.f, 0.f,
+                -1.0f, 1.0f, 0, 0.f, 1.f,
+                1.0f, 1.0f, 0, 1.f, 1.f,
         };
-
-        private FloatBuffer mTriangleVertices;
-
         private final String mVertexShader =
                 "uniform mat4 uMVPMatrix;\n" +
-                "uniform mat4 uSTMatrix;\n" +
-                "attribute vec4 aPosition;\n" +
-                "attribute vec4 aTextureCoord;\n" +
-                "varying vec2 vTextureCoord;\n" +
-                "void main() {\n" +
-                "  gl_Position = uMVPMatrix * aPosition;\n" +
-                "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n" +
-                "}\n";
+                        "uniform mat4 uSTMatrix;\n" +
+                        "attribute vec4 aPosition;\n" +
+                        "attribute vec4 aTextureCoord;\n" +
+                        "varying vec2 vTextureCoord;\n" +
+                        "void main() {\n" +
+                        "  gl_Position = uMVPMatrix * aPosition;\n" +
+                        "  vTextureCoord = (uSTMatrix * aTextureCoord).xy;\n" +
+                        "}\n";
 
         private final String mFragmentShader =
                 "#extension GL_OES_EGL_image_external : require\n" +
-                "precision mediump float;\n" +
-                "varying vec2 vTextureCoord;\n" +
-                "uniform samplerExternalOES sTexture;\n" +
-                "void main() {\n" +
-                "  gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
-                "}\n";
-
+                        "precision mediump float;\n" +
+                        "varying vec2 vTextureCoord;\n" +
+                        "uniform samplerExternalOES sTexture;\n" +
+                        "void main() {\n" +
+                        "  gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
+                        "}\n";
+        private FloatBuffer mTriangleVertices;
         private float[] mMVPMatrix = new float[16];
         private float[] mSTMatrix = new float[16];
-
         private int mProgram;
         private int mTextureID;
         private int muMVPMatrixHandle;
         private int muSTMatrixHandle;
         private int maPositionHandle;
         private int maTextureHandle;
-
         private SurfaceTexture mSurface;
         private boolean updateSurface = false;
-
-        private static final int GL_TEXTURE_EXTERNAL_OES = 0x8D65;
-
         private MediaPlayer mMediaPlayer;
         private int mDisplayWidth = 0;
         private int mDisplayHeight = 0;
@@ -185,7 +192,7 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
 
         public VideoRender(Context context) {
             mTriangleVertices = ByteBuffer.allocateDirect(
-                mTriangleVerticesData.length * FLOAT_SIZE_BYTES)
+                    mTriangleVerticesData.length * FLOAT_SIZE_BYTES)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
             mTriangleVertices.put(mTriangleVerticesData).position(0);
 
@@ -195,10 +202,10 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
         public void setMediaPlayer(MediaPlayer player) {
             mMediaPlayer = player;
         }
-        
+
         @Override
         public void onDrawFrame(GL10 glUnused) {
-            synchronized(this) {
+            synchronized (this) {
                 if (updateSurface) {
                     mSurface.updateTexImage();
                     mSurface.getTransformMatrix(mSTMatrix);
@@ -209,7 +216,7 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
             updateViewport();
 
             GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            GLES20.glClear( GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+            GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
             GLES20.glUseProgram(mProgram);
             checkGlError("glUseProgram");
@@ -219,14 +226,14 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
 
             mTriangleVertices.position(TRIANGLE_VERTICES_DATA_POS_OFFSET);
             GLES20.glVertexAttribPointer(maPositionHandle, 3, GLES20.GL_FLOAT, false,
-                TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+                    TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
             checkGlError("glVertexAttribPointer maPosition");
             GLES20.glEnableVertexAttribArray(maPositionHandle);
             checkGlError("glEnableVertexAttribArray maPositionHandle");
 
             mTriangleVertices.position(TRIANGLE_VERTICES_DATA_UV_OFFSET);
             GLES20.glVertexAttribPointer(maTextureHandle, 3, GLES20.GL_FLOAT, false,
-                TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
+                    TRIANGLE_VERTICES_DATA_STRIDE_BYTES, mTriangleVertices);
             checkGlError("glVertexAttribPointer maTextureHandle");
             GLES20.glEnableVertexAttribArray(maTextureHandle);
             checkGlError("glEnableVertexAttribArray maTextureHandle");
@@ -256,7 +263,7 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
                 GLES20.glViewport(0, -(tmp - mDisplayHeight) / 2, mDisplayWidth, tmp);
 
             } else if ((float) mVideoHeight * mDisplayWidth < (float) mDisplayHeight * mVideoWidth) {
-                scale = (float) mDisplayHeight/ mVideoHeight;
+                scale = (float) mDisplayHeight / mVideoHeight;
 
                 tmp = (int) (mVideoWidth * scale);
 
@@ -311,9 +318,9 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
             checkGlError("glBindTexture mTextureID");
 
             GLES20.glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER,
-                                   GLES20.GL_NEAREST);
+                    GLES20.GL_NEAREST);
             GLES20.glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER,
-                                   GLES20.GL_LINEAR);
+                    GLES20.GL_LINEAR);
 
             /*
              * Create the SurfaceTexture that will feed this textureID,
@@ -391,19 +398,5 @@ class LarryGLSurfaceView extends GLSurfaceView implements MediaPlayer.OnPrepared
         }
 
     }  // End of class VideoRender.
-
-    public void setFrameCallback(FrameCallback fc) {
-        mFrameCallback = fc;
-    }
-
-    private void onFirstFrameRendered() {
-        if (mFrameCallback != null) {
-            mFrameCallback.onFirstFrame();
-        }
-    }
-
-    public interface FrameCallback {
-        void onFirstFrame();
-    }
 
 }  // End of class VideoSurfaceView.

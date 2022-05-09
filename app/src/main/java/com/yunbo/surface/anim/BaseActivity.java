@@ -4,12 +4,13 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 
-import com.yunbo.surface.drag.DragVideoView;
+import androidx.annotation.Nullable;
+
 import com.yunbo.surface.R;
+import com.yunbo.surface.drag.DragVideoView;
 
 /**
  * @author larry on 2017/12/26.
@@ -36,7 +37,7 @@ public class BaseActivity extends Activity implements View.OnClickListener {
         mDragVideoView.setCallback(new DragVideoView.Callback() {
             @Override
             public void onDisappear(int direct) {
-                    BaseActivity.this.onDisappear();
+                BaseActivity.this.onDisappear();
             }
         });
     }

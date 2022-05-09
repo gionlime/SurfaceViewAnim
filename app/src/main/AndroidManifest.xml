@@ -9,7 +9,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.yunbo.surface.MainActivity">
+        <activity
+            android:name=".ZoomMainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -17,7 +19,6 @@
         </activity>
 
         <activity android:name="com.yunbo.surface.anim.TextureViewActivity" />
-        <activity android:name="com.yunbo.surface.anim.GLSurfaceViewActivity" />
         <activity android:name="com.yunbo.surface.anim.SurfaceViewActivity" />
 
     </application>
